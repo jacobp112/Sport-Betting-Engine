@@ -28,15 +28,24 @@ def parse_date(date_str):
             continue
     raise ValueError(f"Unknown date format: {date_str}")
 
-def clean_value(val):
+def clean_value(val, col):
     val = val.strip()
     if not val:
         return ""
-    # Try converting to float if it looks like a number
     try:
-        # Check if it has a period or is purely numeric
-        if "." in val or val.isdigit():
-            return str(float(val))
+        num = float(val)
+        # Check odds bounds to catch corrupted values (e.g. "22" in AH odds)
+        is_1x2_odds = col in OP_ODDS_COLS or col in CL_ODDS_COLS
+        is_ah_odds = col in AH_COLS and col not in ["AHh", "AHCh"]
+        
+        if is_1x2_odds:
+            if not (1.01 <= num <= 50.0):
+                return ""
+        elif is_ah_odds:
+            if not (1.01 <= num <= 5.0):
+                return ""
+                
+        return str(num)
     except ValueError:
         pass
     return val
@@ -132,7 +141,7 @@ def process_league(league_name):
                 for col in OP_ODDS_COLS + CL_ODDS_COLS + AH_COLS:
                     raw_col = header_map.get(col)
                     val = row.get(raw_col, "") if raw_col else ""
-                    processed_row[col] = clean_value(val)
+                    processed_row[col] = clean_value(val, col)
                 
                 # Determine CLV Reference Book
                 if processed_row["PSCH"] and processed_row["PSCD"] and processed_row["PSCA"]:

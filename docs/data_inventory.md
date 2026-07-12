@@ -110,6 +110,14 @@ To ensure that rolling-form, fatigue, and head-to-head calculations do not break
 
 ## Pipeline Execution Log
 
+### Run on 2026-07-12 03:20:37
+- **Championship Row Count**: 2760 matches
+- **Championship MD5**: `e436fdb5abf391b5a2bceb1d25500d4d`
+- **League One Row Count**: 2760 matches
+- **League One MD5**: `bce261916ac47dd33aa31ab195e28ac2`
+- **Status**: Verified Reproducible (Byte-Identical to Reference Checksums)
+
+
 ### Run on 2026-07-12 03:14:24
 - **Championship Row Count**: 2760 matches
 - **Championship MD5**: `708906b4e5e6c8f3983ae7bb858e4aa4`
