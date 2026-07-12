@@ -30,7 +30,7 @@ class EloTracker:
         # Ensure chronological order
         df_sorted = df.copy()
         df_sorted["DateTime"] = pd.to_datetime(df_sorted["Date"] + " " + df_sorted["Time"])
-        df_sorted = df_sorted.sort_values("DateTime").reset_index(drop=True)
+        df_sorted = df_sorted.sort_values(by=["DateTime", "HomeTeam", "AwayTeam"]).reset_index(drop=True)
         
         self.rating_history = []
         
@@ -98,7 +98,7 @@ class EloTracker:
         # Align training df with our chronological pre-match ratings
         df_train_sorted = df_train.copy()
         df_train_sorted["DateTime"] = pd.to_datetime(df_train_sorted["Date"] + " " + df_train_sorted["Time"])
-        df_train_sorted = df_train_sorted.sort_values("DateTime").reset_index(drop=True)
+        df_train_sorted = df_train_sorted.sort_values(by=["DateTime", "HomeTeam", "AwayTeam"]).reset_index(drop=True)
         
         # Construct timelines and extract pre-match ratings
         self.ratings = {} # reset ratings to fit training set from scratch

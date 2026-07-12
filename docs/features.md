@@ -36,6 +36,9 @@ $$\text{Feature} = \frac{\sum_{i=1}^{M} \text{Value}_i + (N - M) \times \text{Pr
 - Prior Points: `1.365`
 - Prior Goal Difference: `0.0`
 
+> [!NOTE]
+> These priors represent standard European domestic league averages (corresponding to ~2.70 total goals per game). They closely align with the actual training set averages for the Championship (overall goals of 1.27, overall points of 1.37) and serve as stable defaults for promoted/relegated teams.
+
 ---
 
 ### 2. Venue-Specific Rolling Splits (FEAT-2)

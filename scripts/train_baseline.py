@@ -51,6 +51,9 @@ def main():
 
     print("Loading feature table...")
     df = pd.read_csv(FEATURES_PATH)
+    df["DateTime"] = pd.to_datetime(df["Date"] + " " + df["Time"])
+    df = df.sort_values(by=["DateTime", "HomeTeam", "AwayTeam"]).reset_index(drop=True)
+    df = df.drop(columns=["DateTime"])
     print(f"Total matches loaded: {len(df)}")
 
     # 2. Temporal split
@@ -145,7 +148,7 @@ def main():
     # Match validation rows: Championship only, season 24/25
     df_val_champ = df_champ_raw[df_champ_raw["season"].isin(VAL_SEASONS)].copy()
     df_val_champ["DateTime"] = pd.to_datetime(df_val_champ["Date"] + " " + df_val_champ["Time"])
-    df_val_champ = df_val_champ.sort_values("DateTime").reset_index(drop=True)
+    df_val_champ = df_val_champ.sort_values(by=["DateTime", "HomeTeam", "AwayTeam"]).reset_index(drop=True)
 
     # Get delta_r for val matches from history
     # Filter history to Championship val matches
