@@ -24,20 +24,19 @@ def github_request(url, method="GET", data=None):
 def main():
     url = f"https://api.github.com/repos/{REPO}/issues?state=open&per_page=100"
     issues = github_request(url)
-    target_issue = next((i for i in issues if i['title'].startswith("DATA-4 ")), None)
+    target_issue = next((i for i in issues if i['title'].startswith("DATA-5 ")), None)
     
     if not target_issue:
-        print("DATA-4 issue not found!")
+        print("DATA-5 issue not found!")
         return
         
     issue_num = target_issue['number']
-    print(f"Found DATA-4: Issue #{issue_num}")
+    print(f"Found DATA-5: Issue #{issue_num}")
     
     # Tick the boxes
     body = target_issue['body']
-    body = body.replace("- [ ] Identify all non-standard match statuses", "- [x] Identify all non-standard match statuses")
-    body = body.replace("- [ ] Decide and document a rule per status", "- [x] Decide and document a rule per status")
-    body = body.replace("- [ ] Apply the rule and verify row counts", "- [x] Apply the rule and verify row counts")
+    body = body.replace("- [ ] Turn the manual cleaning steps above", "- [x] Turn the manual cleaning steps above")
+    body = body.replace("- [ ] Confirm a teammate can run it from scratch", "- [x] Confirm a teammate can run it from scratch")
     
     # Update and close
     update_url = f"https://api.github.com/repos/{REPO}/issues/{issue_num}"

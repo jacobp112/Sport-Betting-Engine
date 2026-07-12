@@ -134,8 +134,11 @@ Thumbs.db
 
 # Project-specific data / log exclusions
 /data/raw/*
+!/data/raw/*.csv
 !/data/raw/.gitkeep
 /data/processed/*
+!/data/processed/*.csv
+!/data/processed/checksums.txt
 !/data/processed/.gitkeep
 /logs/*
 !/logs/.gitkeep

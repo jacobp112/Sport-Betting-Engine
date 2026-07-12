@@ -1,0 +1,5 @@
+# Sports Betting Model - Dependency List
+# Currently, the core data foundation pipeline uses the Python Standard Library only.
+# No external dependencies (like pandas, requests, numpy) are required for the pipeline.
+#
+# Minimum compatible Python version: 3.10+

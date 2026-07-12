@@ -11,14 +11,17 @@ A statistical modelling and simulation engine for sports betting, designed to bu
 ---
 
 ## 🚦 Current Project Phase
-We are currently in **Epic 1: Data Foundation**. 
+We are currently starting **Epic 2: Feature Engineering**. 
 
 ### Phase Timeline & Progress
 - [x] **Epic 0: Project Setup & Team Workflow** — *Completed*
   - Repository structure initialized.
   - Decision logs, roles, and bet-tracking schemas established.
-- [ ] **Epic 1: Data Foundation** — *Not Started*
-- [ ] **Epic 2: Feature Engineering** — *Not Started*
+- [x] **Epic 1: Data Foundation** — *Completed*
+  - Historical data ingested, cleaned, and verified (opening & closing 1X2 and AH odds).
+  - Version-controlled team normalisation mapping established.
+  - Deterministic data pipeline entrypoint created with automated checksum checks.
+- [ ] **Epic 2: Feature Engineering** — *Current Phase*
 - [ ] **Epic 3: First Model — Poisson / Elo Baseline** — *Not Started*
 - [ ] **Epic 4: Backtesting Framework** — *Not Started*
 - [ ] **Epic 5: Honest Validation** — *Not Started*
@@ -43,22 +46,29 @@ We are currently in **Epic 1: Data Foundation**.
 ---
 
 ## ⚙️ How to Reproduce the Pipeline
-*(Detailed setup instructions will be updated as the pipeline is developed.)*
+
+The data ingestion, validation, and team name normalisation are fully integrated into a single deterministic master script.
 
 ### 1. Prerequisites
-- python 3.10+
-- virtualenv
+- Python 3.10+ (Standard Library only, no external libraries required for Epic 1)
 
 ### 2. Setup
-Create a virtual environment and install dependencies:
+Create a virtual environment:
 ```bash
 python -m venv venv
 venv\Scripts\activate
-# Dependencies will be added in Epic 1
+pip install -r requirements.txt
 ```
 
-### 3. Run Pipeline
-To download raw data, clean it, and run feature engineering:
+### 3. Run the Data Pipeline
+Run the master pipeline script to process the datasets:
 ```bash
-# Script entrypoints will be implemented in Epic 1 and 2
+# Execute entire pipeline (downloads raw files, cleans results/odds, normalises team names, verifies checksums)
+python scripts/run_pipeline.py
+
+# Offline mode (reprocesses cached raw files without hitting football-data.co.uk)
+python scripts/run_pipeline.py --skip-download
 ```
+
+Output datasets will be written atomically to `data/processed/championship.csv` and `data/processed/league_one.csv`. The script will calculate MD5 checksums of the output files and assert them against `data/processed/checksums.txt` to guarantee byte-identical reproduction.
+

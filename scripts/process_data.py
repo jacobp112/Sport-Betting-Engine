@@ -161,14 +161,15 @@ def process_league(league_name):
     # Sort chronologically by date and time
     processed_rows.sort(key=lambda r: (r["Date"], r["Time"]))
     
-    # Save output
+    # Save output to a temp file first
     output_path = PROCESSED_DIR / f"{league_name}.csv"
-    with open(output_path, "w", encoding="utf-8", newline="") as f:
+    tmp_path = PROCESSED_DIR / f"{league_name}.csv.tmp"
+    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=ALL_COLS)
         writer.writeheader()
         writer.writerows(processed_rows)
         
-    print(f"Saved processed data to {output_path}")
+    print(f"Staged processed data to temporary file {tmp_path}")
     print(f"Total Matches: {total_rows}")
     
     pinnacle_op_rate = (pinnacle_op_valid / total_rows) * 100 if total_rows else 0
@@ -223,6 +224,12 @@ def process_league(league_name):
     
     if pinnacle_cl_rate < 95.0:
         print(f"WARNING: Overall Pinnacle closing odds join rate ({pinnacle_cl_rate:.2f}%) is below 95% due to 25/26 season collection gaps on football-data.co.uk.")
+    
+    # Rename tmp file to final file now that all assertions passed successfully
+    if output_path.exists():
+        output_path.unlink()
+    tmp_path.rename(output_path)
+    print(f"Atomically saved processed data to {output_path}")
     
     summary = {
         "league": league_name,

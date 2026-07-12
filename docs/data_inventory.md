@@ -102,3 +102,21 @@ To ensure that rolling-form, fatigue, and head-to-head calculations do not break
 > [!IMPORTANT]
 > **Epic 2 Hard Dependency**: Normalisation must be fully complete before Epic 2 (Feature Engineering) begins. This prevents team history fragmentation and ensures that rolling-form calculations track teams correctly across seasons and promotions/relegations.
 
+
+
+## Pipeline Execution Log
+
+### Run on 2026-07-12 03:01:48
+- **Championship Row Count**: 2760 matches
+- **Championship MD5**: `7e61cdbc009c73da8a2544232df5045b`
+- **League One Row Count**: 2760 matches
+- **League One MD5**: `7d92077c9162eeedd3eb3594c72be3f2`
+- **Status**: Verified Reproducible (Byte-Identical to Reference Checksums)
+
+
+### Run on 2026-07-12 03:01:34
+- **Championship Row Count**: 2760 matches
+- **Championship MD5**: `7e61cdbc009c73da8a2544232df5045b`
+- **League One Row Count**: 2760 matches
+- **League One MD5**: `7d92077c9162eeedd3eb3594c72be3f2`
+- **Status**: Verified Reproducible (Byte-Identical to Reference Checksums)
