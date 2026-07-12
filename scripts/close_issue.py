@@ -24,20 +24,20 @@ def github_request(url, method="GET", data=None):
 def main():
     url = f"https://api.github.com/repos/{REPO}/issues?state=open&per_page=100"
     issues = github_request(url)
-    data1_issue = next((i for i in issues if i['title'].startswith("DATA-1 ")), None)
+    target_issue = next((i for i in issues if i['title'].startswith("DATA-2 ")), None)
     
-    if not data1_issue:
-        print("DATA-1 issue not found!")
+    if not target_issue:
+        print("DATA-2 issue not found!")
         return
         
-    issue_num = data1_issue['number']
-    print(f"Found DATA-1: Issue #{issue_num}")
+    issue_num = target_issue['number']
+    print(f"Found DATA-2: Issue #{issue_num}")
     
     # Tick the boxes
-    body = data1_issue['body']
-    body = body.replace("- [ ] Identify and document data source", "- [x] Identify and document data source")
-    body = body.replace("- [ ] Pull raw data into", "- [x] Pull raw data into")
-    body = body.replace("- [ ] Record season coverage and row counts", "- [x] Record season coverage and row counts")
+    body = target_issue['body']
+    body = body.replace("- [ ] Source closing odds", "- [x] Source closing odds")
+    body = body.replace("- [ ] Join odds to match", "- [x] Join odds to match")
+    body = body.replace("- [ ] Log join success rate", "- [x] Log join success rate")
     
     # Update and close
     update_url = f"https://api.github.com/repos/{REPO}/issues/{issue_num}"
