@@ -77,6 +77,7 @@ def process_league(league_name):
             # Normalise headers to avoid casing/spacing mismatches
             header_map = {h.strip(): h for h in headers}
             
+            seen_keys = set()
             for row in reader:
                 # Basic validation: must have HomeTeam and FTR
                 home = row.get(header_map.get("HomeTeam", ""))
@@ -95,6 +96,37 @@ def process_league(league_name):
                 processed_row["FTAG"] = row.get(header_map.get("FTAG", "")).strip()
                 processed_row["FTR"] = row.get(header_map.get("FTR", "")).strip()
                 processed_row["season"] = season
+                
+                # 1. Duplicate row check
+                match_key = (processed_row["HomeTeam"], processed_row["AwayTeam"], processed_row["Date"])
+                if match_key in seen_keys:
+                    print(f"  WARNING: Duplicate row skipped: {match_key[0]} vs {match_key[1]} on {match_key[2]}")
+                    continue
+                seen_keys.add(match_key)
+                
+                # 2. Plausible goal range check (0-15) and type conversion
+                try:
+                    fthg_int = int(processed_row["FTHG"])
+                    ftag_int = int(processed_row["FTAG"])
+                except ValueError:
+                    print(f"  WARNING: Skipped row due to non-numeric goals: {processed_row['HomeTeam']} vs {processed_row['AwayTeam']} on {processed_row['Date']} (FTHG={processed_row['FTHG']}, FTAG={processed_row['FTAG']})")
+                    continue
+                    
+                if not (0 <= fthg_int <= 15) or not (0 <= ftag_int <= 15):
+                    print(f"  WARNING: Skipped row due to goals out of range: {processed_row['HomeTeam']} vs {processed_row['AwayTeam']} on {processed_row['Date']} (FTHG={fthg_int}, FTAG={ftag_int})")
+                    continue
+                
+                # 3. Cross-field consistency check (FTR must match FTHG vs FTAG difference)
+                ftr = processed_row["FTR"]
+                expected_ftr = "D"
+                if fthg_int > ftag_int:
+                    expected_ftr = "H"
+                elif fthg_int < ftag_int:
+                    expected_ftr = "A"
+                    
+                if ftr != expected_ftr:
+                    print(f"  WARNING: Skipped row due to inconsistent FTR: {processed_row['HomeTeam']} vs {processed_row['AwayTeam']} on {processed_row['Date']} (FTHG={fthg_int}, FTAG={ftag_int}, FTR={ftr}, expected {expected_ftr})")
+                    continue
                 
                 # Odds fields
                 for col in OP_ODDS_COLS + CL_ODDS_COLS + AH_COLS:
@@ -183,6 +215,11 @@ def process_league(league_name):
         pct = (stats["pin_cl"] / stats["total"]) * 100 if stats["total"] else 0
         assert pct >= 95.0, f"Error: Season {seas} Pinnacle closing odds join rate ({pct:.2f}%) is below 95%!"
     print("Assertion Passed: Pinnacle closing odds join rate >= 95% for seasons 21/22 to 24/25")
+    
+    # Assert total match count matches formula: 552 matches per completed season
+    expected_total_matches = 552 * len(SEASONS)
+    assert total_rows == expected_total_matches, f"Error: Processed {total_rows} matches, but expected {expected_total_matches}!"
+    print(f"Assertion Passed: Processed match count ({total_rows}) matches expected ({expected_total_matches})")
     
     if pinnacle_cl_rate < 95.0:
         print(f"WARNING: Overall Pinnacle closing odds join rate ({pinnacle_cl_rate:.2f}%) is below 95% due to 25/26 season collection gaps on football-data.co.uk.")
