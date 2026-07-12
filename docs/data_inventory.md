@@ -41,11 +41,14 @@ Pinnacle serves as the primary sharp reference for de-vigging and has a strict 9
 | Championship | 2760 | 89.42% | 89.82% | 100.00% | 100.00% | 100.00% | 100.00% | 100.00% | 100.00% |
 | League One | 2760 | 85.98% | 85.98% | 100.00% | 100.00% | 100.00% | 100.00% | 100.00% | 100.00% |
 
-### ⚠️ Pinnacle 25/26 Data Limitation
+### ⚠️ Pinnacle 25/26 Structural Data Gap
 During verification, we identified a critical data collection limitation in the raw source files from Football-Data.co.uk:
 - **Seasons 21/22 to 24/25**: Pinnacle opening and closing odds have **100.00%** coverage.
-- **Season 25/26**: Pinnacle coverage drops to **49.09%** (Championship) and **29.89%** (League One) due to scraping failures/omissions at the source from late October 2025 onwards.
-- **Mitigation**: Bet365, Market Average, and Market Maximum are **100.00%** populated across all seasons (including 25/26). Downstream de-vigging in Epic 4 will fall back to Market Average odds (`AvgH/D/A`, `AvgCH/CD/CA`) for matches where Pinnacle odds are missing, ensuring no training data is lost.
+- **Season 25/26**: Pinnacle coverage drops to **49.09%** (Championship) and **29.89%** (League One). This represents a **permanent structural change** in the data feed rather than a temporary blip, starting on **31/10/2025** for the Championship and **04/11/2025** for League One.
+- **Mitigation & Traceability**:
+  - The processed datasets include a `clv_reference_book` column indicating which reference was used for that match (`pinnacle` vs `market_average`).
+  - Where Pinnacle is present, it is used. For matches after the gap start date, we fall back to Market Average odds (`AvgH/D/A`, `AvgCH/CD/CA`), which remain **100.00%** complete across all seasons.
+  - This column allows downstream CLV and backtesting frameworks to adjust for Pinnacle's tighter margins (~2-3%) vs Market Average (~5-8%) and prevent artificial CLV inflation.
 
 ---
 
@@ -68,6 +71,7 @@ Processed data is stored chronologically in:
 | `FTAG` | Integer | Full-time away goals |
 | `FTR` | String | Full-time result (`H` = Home win, `D` = Draw, `A` = Away win) |
 | `season` | String | Season identifier (e.g., `2122`, `2223`, etc.) |
+| `clv_reference_book` | String | Reference book used for CLV (`pinnacle` or `market_average`) |
 | `B365H` / `B365D` / `B365A` | Float | Bet365 Opening Odds (Home/Draw/Away) |
 | `PSH` / `PSD` / `PSA` | Float | Pinnacle Opening Odds (Home/Draw/Away) |
 | `AvgH` / `AvgD` / `AvgA` | Float | Market Average Opening Odds (Home/Draw/Away) |
@@ -105,6 +109,22 @@ To ensure that rolling-form, fatigue, and head-to-head calculations do not break
 
 
 ## Pipeline Execution Log
+
+### Run on 2026-07-12 03:14:24
+- **Championship Row Count**: 2760 matches
+- **Championship MD5**: `708906b4e5e6c8f3983ae7bb858e4aa4`
+- **League One Row Count**: 2760 matches
+- **League One MD5**: `cfebce581f2db469bdc286eb690ee557`
+- **Status**: Verified Reproducible (Byte-Identical to Reference Checksums)
+
+
+### Run on 2026-07-12 03:13:54
+- **Championship Row Count**: 2760 matches
+- **Championship MD5**: `708906b4e5e6c8f3983ae7bb858e4aa4`
+- **League One Row Count**: 2760 matches
+- **League One MD5**: `cfebce581f2db469bdc286eb690ee557`
+- **Status**: Verified Reproducible (Byte-Identical to Reference Checksums)
+
 
 ### Run on 2026-07-12 03:01:48
 - **Championship Row Count**: 2760 matches

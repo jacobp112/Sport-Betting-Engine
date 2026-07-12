@@ -50,7 +50,7 @@ We are currently starting **Epic 2: Feature Engineering**.
 The data ingestion, validation, and team name normalisation are fully integrated into a single deterministic master script.
 
 ### 1. Prerequisites
-- Python 3.10+ (Standard Library only, no external libraries required for Epic 1)
+- Python 3.13.0 (pinned via `.python-version`)
 
 ### 2. Setup
 Create a virtual environment:

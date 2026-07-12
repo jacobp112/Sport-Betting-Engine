@@ -11,7 +11,7 @@ LEAGUES = {
 RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
 
-BASE_COLS = ["Div", "Date", "Time", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "season"]
+BASE_COLS = ["Div", "Date", "Time", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "season", "clv_reference_book"]
 OP_ODDS_COLS = ["B365H", "B365D", "B365A", "PSH", "PSD", "PSA", "AvgH", "AvgD", "AvgA", "MaxH", "MaxD", "MaxA"]
 CL_ODDS_COLS = ["B365CH", "B365CD", "B365CA", "PSCH", "PSCD", "PSCA", "AvgCH", "AvgCD", "AvgCA", "MaxCH", "MaxCD", "MaxCA"]
 AH_COLS = [
@@ -133,6 +133,12 @@ def process_league(league_name):
                     raw_col = header_map.get(col)
                     val = row.get(raw_col, "") if raw_col else ""
                     processed_row[col] = clean_value(val)
+                
+                # Determine CLV Reference Book
+                if processed_row["PSCH"] and processed_row["PSCD"] and processed_row["PSCA"]:
+                    processed_row["clv_reference_book"] = "pinnacle"
+                else:
+                    processed_row["clv_reference_book"] = "market_average"
                 
                 # Verification counts
                 total_rows += 1
