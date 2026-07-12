@@ -1,5 +1,6 @@
 # Sports Betting Model Engine Requirements
 # Python Version Pin: 3.13.0
-
-# Standard library modules only are used for the Data Foundation pipeline.
-# No external pip dependencies are required yet.
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.2.0
