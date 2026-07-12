@@ -76,3 +76,29 @@ Processed data is stored chronologically in:
 | `PSCH` / `PSCD` / `PSCA` | Float | Pinnacle Closing Odds (Home/Draw/Away) |
 | `AvgCH` / `AvgCD` / `AvgCA` | Float | Market Average Closing Odds (Home/Draw/Away) |
 | `MaxCH` / `MaxCD` / `MaxCA` | Float | Market Maximum Closing Odds (Home/Draw/Away) |
+| `AHh` | Float | Opening Asian Handicap line/handicap size |
+| `B365AHH` / `B365AHA` | Float | Bet365 Opening AH Odds (Home/Away) |
+| `PAHH` / `PAHA` | Float | Pinnacle Opening AH Odds (Home/Away) |
+| `AvgAHH` / `AvgAHA` | Float | Market Average Opening AH Odds (Home/Away) |
+| `MaxAHH` / `MaxAHA` | Float | Market Maximum Opening AH Odds (Home/Away) |
+| `AHCh` | Float | Closing Asian Handicap line/handicap size |
+| `B365CAHH` / `B365CAHA` | Float | Bet365 Closing AH Odds (Home/Away) |
+| `PCAHH` / `PCAHA` | Float | Pinnacle Closing AH Odds (Home/Away) |
+| `AvgCAHH` / `AvgCAHA` | Float | Market Average Closing AH Odds (Home/Away) |
+| `MaxCAHH` / `MaxCAHA` | Float | Market Maximum Closing AH Odds (Home/Away) |
+
+---
+
+## Team Name Normalisation (DATA-3)
+
+To ensure that rolling-form, fatigue, and head-to-head calculations do not break or fragment across varying team abbreviations (especially for newly promoted/relegated clubs), we normalise all team names to standard full canonical forms.
+
+### Mapping Configuration
+- **Location**: [`/docs/team_name_mapping.json`](file:///c:/Users/jacob/Documents/Sport-Betting-Engine/docs/team_name_mapping.json)
+- **Scope**: Covers all 67 unique raw team names across the Championship and League One for seasons 21/22 through 25/26 (totaling 117 entries).
+- **Rule**: Every canonical team name maps to itself (e.g. `"Coventry City": "Coventry City"`, `"Luton Town": "Luton Town"`). Shortened raw names (e.g., `"West Brom"`, `"Nott'm Forest"`, `"QPR"`) are normalised to their full canonical forms.
+
+### Downstream Dependency (Epic 2)
+> [!IMPORTANT]
+> **Epic 2 Hard Dependency**: Normalisation must be fully complete before Epic 2 (Feature Engineering) begins. This prevents team history fragmentation and ensures that rolling-form calculations track teams correctly across seasons and promotions/relegations.
+
