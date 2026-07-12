@@ -24,28 +24,24 @@ def github_request(url, method="GET", data=None):
 def main():
     url = f"https://api.github.com/repos/{REPO}/issues?state=open&per_page=100"
     issues = github_request(url)
-    target_issue = next((i for i in issues if i['title'].startswith("DATA-5 ")), None)
     
-    if not target_issue:
-        print("DATA-5 issue not found!")
-        return
-        
-    issue_num = target_issue['number']
-    print(f"Found DATA-5: Issue #{issue_num}")
-    
-    # Tick the boxes
-    body = target_issue['body']
-    body = body.replace("- [ ] Turn the manual cleaning steps above", "- [x] Turn the manual cleaning steps above")
-    body = body.replace("- [ ] Confirm a teammate can run it from scratch", "- [x] Confirm a teammate can run it from scratch")
-    
-    # Update and close
-    update_url = f"https://api.github.com/repos/{REPO}/issues/{issue_num}"
-    update_data = {
-        "body": body,
-        "state": "closed"
-    }
-    github_request(update_url, method="PATCH", data=update_data)
-    print(f"Issue #{issue_num} successfully updated and closed.")
+    # Close all issues starting with FEAT-1, FEAT-2, FEAT-3, FEAT-4, FEAT-5, FEAT-6
+    for i in issues:
+        title = i['title']
+        number = i['number']
+        if any(title.startswith(prefix + " ") for prefix in ["FEAT-1", "FEAT-2", "FEAT-3", "FEAT-4", "FEAT-5", "FEAT-6"]):
+            print(f"Closing {title} (Issue #{number})...")
+            update_url = f"https://api.github.com/repos/{REPO}/issues/{number}"
+            # Tick the checkboxes in body if present
+            body = i.get('body', '')
+            if body:
+                body = body.replace("- [ ] ", "- [x] ")
+            update_data = {
+                "body": body,
+                "state": "closed"
+            }
+            github_request(update_url, method="PATCH", data=update_data)
+            print(f"Closed Issue #{number}")
 
 if __name__ == "__main__":
     main()

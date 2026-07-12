@@ -11,7 +11,7 @@ A statistical modelling and simulation engine for sports betting, designed to bu
 ---
 
 ## 🚦 Current Project Phase
-We are currently starting **Epic 2: Feature Engineering**. 
+We are currently starting **Epic 3: First Model — Poisson / Elo Baseline**. 
 
 ### Phase Timeline & Progress
 - [x] **Epic 0: Project Setup & Team Workflow** — *Completed*
@@ -21,8 +21,11 @@ We are currently starting **Epic 2: Feature Engineering**.
   - Historical data ingested, cleaned, and verified (opening & closing 1X2 and AH odds).
   - Version-controlled team normalisation mapping established.
   - Deterministic data pipeline entrypoint created with automated checksum checks.
-- [ ] **Epic 2: Feature Engineering** — *Current Phase*
-- [ ] **Epic 3: First Model — Poisson / Elo Baseline** — *Not Started*
+- [x] **Epic 2: Feature Engineering** — *Completed*
+  - Built rolling form, venue splits, rest days, and chronological H2H history.
+  - Enforced chronological shifting (no leakage) and math-blended cold-start imputation.
+  - Glossary and adversarial review compiled in `/docs/features.md`.
+- [ ] **Epic 3: First Model — Poisson / Elo Baseline** — *Current Phase*
 - [ ] **Epic 4: Backtesting Framework** — *Not Started*
 - [ ] **Epic 5: Honest Validation** — *Not Started*
 - [ ] **Epic 6: Paper Trading** — *Not Started*
@@ -71,4 +74,17 @@ python scripts/run_pipeline.py --skip-download
 ```
 
 Output datasets will be written atomically to `data/processed/championship.csv` and `data/processed/league_one.csv`. The script will calculate MD5 checksums of the output files and assert them against `data/processed/checksums.txt` to guarantee byte-identical reproduction.
+
+### 4. Run the Feature Pipeline
+Build the modeling features:
+```bash
+# Generate all rolling form, venue splits, rest days, and H2H features
+python scripts/build_features.py
+
+# Run unit tests to verify feature constraints (shift leakage, imputation, venue stats splits)
+python -m unittest tests/test_features.py
+```
+
+The resulting model-ready feature table will be written atomically to `data/features/championship_features.csv` containing all 92 calculated columns.
+
 

@@ -144,3 +144,5 @@ Thumbs.db
 !/logs/.gitkeep
 /backtests/*
 !/backtests/.gitkeep
+/data/features/*
+!/data/features/.gitkeep
